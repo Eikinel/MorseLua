@@ -1,13 +1,22 @@
 local Button = {}
 Button.__index = Button
 
-function Button.new(string, font, image, posx, posy, indent)
+function Button.new(string, font, image, x, y, halign, valign)
     local t = {}
+    local align = {
+        up = 0, left = 0,
+        center = 0.5,
+        down = 1, right = 1
+    }
 
+    if not halign then halign = "left" end
+    if not valign then valign = "up" end
+
+    t.type = const.widgets.button
     t.string = string
     t.text = love.graphics.newText(font, string)
     t.image = image
-    t.position = { x = posx, y = posy }
+    t.position = { x = x - t.text:getWidth() * align[halign], y = y - t.text:getHeight() * align[valign] }
     t.indent = indent
     t.color = { r or 1, g or 1, b or 1, a or 1}
     

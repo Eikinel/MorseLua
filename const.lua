@@ -17,4 +17,8 @@ const.frames = {
     game = "game"
 }
 
+const.widgets = {
+    button = "button"
+}
+
 return const

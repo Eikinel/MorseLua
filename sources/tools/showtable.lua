@@ -6,8 +6,10 @@ function showTable(table, n)
     end
 
     for k, v in pairs(table) do
-        for i = 1, n do io.write("\t") end
-        print("'-> ", k, v)
-        showTable(v, n + 1) 
+        if k ~= "__index" then
+            for i = 1, n do io.write("\t") end
+            print("'-> ", k, v)
+            showTable(v, n + 1)
+        end
     end
 end

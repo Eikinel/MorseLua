@@ -1,4 +1,5 @@
 _G.const = require("const")
+require(const.folders.tools .. "showtable")
 
 function love.load()
     frame = require(const.folders.frames .. const.frames.menu).new()
