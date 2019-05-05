@@ -15,7 +15,7 @@ function UI:getWidgets()
     return self.widgets
 end
 
-function UI:getWidgetByType(type)
+function UI:getWidgetsByType(type)
     for wtype, widget in pairs(self.widgets) do
         if wtype == type then return widget end
     end
@@ -33,7 +33,8 @@ end
 function UI:update(dt)
     for _, widgets in pairs(self.widgets) do
         for _, widget in ipairs(widgets) do
-            widget:update(dt)
+            local ret = widget:update(dt)
+            if ret then return ret end
         end
     end
 end

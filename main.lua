@@ -1,4 +1,5 @@
 _G.const = require("const")
+_G.debug = true
 require(const.folders.tools .. "showtable")
 
 function love.load()
@@ -11,4 +12,8 @@ end
 
 function love.draw()
     frame:draw()
+
+    if debug then
+        love.graphics.print("State = " .. frame.state, 20, 20)
+    end
 end
