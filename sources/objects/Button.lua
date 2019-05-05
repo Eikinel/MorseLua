@@ -1,7 +1,7 @@
 local Button = {}
 Button.__index = Button
 
-function Button:new(string, font, image, posx, posy, indent)
+function Button.new(string, font, image, posx, posy, indent)
     local t = {}
 
     t.string = string
@@ -18,6 +18,7 @@ function Button:new(string, font, image, posx, posy, indent)
 
     return setmetatable(t, Button)
 end
+
 
 -- Getters
 function Button:getText()
@@ -40,6 +41,10 @@ function Button:getY()
     return self.position.y
 end
 
+function Button:getColor()
+    return self.color
+end
+
 function Button:getWidth()
     return self:getText():getWidth()
 end
@@ -54,18 +59,20 @@ end
 
 
 -- Events
-function Button:isHovered(mousex, mousey)
-    if mousex >= self:getX() and mousex <= self:getX() + self:getWidth()
-    and mousey >= self:getY() and mousey <= self:getY() + self:getHeight() then
+function Button:isHovered()
+    local x, y = love.mouse.getPosition()
+
+    if x >= self:getX() and x <= self:getX() + self:getWidth()
+    and y >= self:getY() and y <= self:getY() + self:getHeight() then
         return true
     end
 
     return false
 end
 
-function Button:update(dt, mousex, mousey)
+function Button:update(dt)
     -- Call onHover/onUnhover once
-    if self:isHovered(mousex, mousey) then
+    if self:isHovered() then
         if not self.hovered then self.onHover() self.hovered = true end
     else
         if self.hovered then self.onUnhover() self.hovered = false end
@@ -73,7 +80,9 @@ function Button:update(dt, mousex, mousey)
 end
 
 function Button:draw()
-    love.graphics.setColor(self.color)
+    if self:getImage() then love.graphics.draw(self:getImage()) end
+    
+    love.graphics.setColor(self:getColor())
     love.graphics.draw(self:getText(), self:getX(), self:getY())
 end
 
