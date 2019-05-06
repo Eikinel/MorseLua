@@ -10,8 +10,8 @@ function menu.new()
     local w, h = love.graphics.getDimensions()
 
     local fonts = {}
-    fonts.title = love.graphics.newFont(const.folders.fonts .. "TovariSans.ttf", 168)
-    fonts.default = love.graphics.newFont(const.folders.fonts .. "TovariSans.ttf", 84)
+    fonts.default = { name = const.folders.fonts .. "TovariSans.ttf", sizefactor = 0.06 }
+    fonts.title = { name = const.folders.fonts .. "TovariSans.ttf", sizefactor = 0.13 }
 
     menu.UI = UI.new()
 
@@ -19,10 +19,10 @@ function menu.new()
     local buttons = {}
     local script = require(const.folders.scripts .. "button")
 
-    buttons.play = Button.new("Play", fonts.default, nil, w * 0.5, h * 0.5, "center", "center")
+    buttons.play = Button.new("Play", fonts.default, nil, 0.5, 0.5, "center", "center")
     buttons.play:setOnClick(function() return script.toFrame(const.frames.game) end)
-    buttons.options = Button.new("Options", fonts.default, nil, w * 0.5, h * 0.65, "center", "center")
-    buttons.exit = Button.new("Exit", fonts.default, nil, w * 0.5, h * 0.8, "center", "center")
+    buttons.options = Button.new("Options", fonts.default, nil, 0.5, 0.65, "center", "center")
+    buttons.exit = Button.new("Exit", fonts.default, nil, 0.5, 0.8, "center", "center")
     buttons.exit:setOnClick(function() script.exit() end)
 
     -- Override buttons onHover/onUnhover behavior
@@ -33,9 +33,9 @@ function menu.new()
         button:setOnHover(onHover)
         button:setOnUnhover(onUnhover)
         menu.UI:addWidget(const.widgets.button, button) -- Attach UI elements to actual UI
-    end    
+    end
 
-    menu.UI:addWidget(const.widgets.button, Button.new("Morse", fonts.title, nil, w * 0.5, h * 0.2, "center", "center"))
+    menu.UI:addWidget(const.widgets.button, Button.new("Morse", fonts.title, nil, 0.5, 0.2, "center", "center"))
 
     return menu
 end
@@ -47,6 +47,10 @@ end
 
 function menu:draw()
     self.UI:draw()  
+end
+
+function menu:resize(w, h)
+    self.UI:resize(w, h)
 end
 
 return menu

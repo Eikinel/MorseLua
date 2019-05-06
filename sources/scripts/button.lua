@@ -5,9 +5,7 @@ function script.changeColor(button, color)
 end
 
 function script.changeText(button, string)
-    button.string = string
-    button.text:set({ button.color, button.string })
-    button:setPosition(button:getLocalPosition()) -- Readjust button with new text
+    button:setText(string)
 end
 
 function script.toFrame(frame)

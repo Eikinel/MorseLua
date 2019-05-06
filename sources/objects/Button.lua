@@ -15,18 +15,37 @@ end
 -- Initializer
 function Button.new(string, font, image, x, y, halign, valign)
     local t = {}
+    local w, h = love.graphics.getDimensions()
 
     if not halign then halign = "left" end
     if not valign then valign = "up" end
+    
+    function t:setText(font, string)
+        self.string = string
+        self.text = love.graphics.newText(font, string)
+    end
+
+    function t:getLocalPosition()
+        local w, h = love.graphics.getDimensions()
+
+        return w * self.position.x, h * self.position.y
+    end
+    
+    function t:getGlobalPosition()
+        local x, y = self:getLocalPosition()
+    
+        return x - self.text:getWidth() * getAlignFactor(self.halign), y - self.text:getHeight() * getAlignFactor(self.valign)
+    end
 
     t.type = const.widgets.button
-    t.string = string
-    t.text = love.graphics.newText(font, string)
+    t.string = string or ""
+    t.font = font
+    t:setText(love.graphics.newFont(font.name, w * font.sizefactor), string)
     t.image = image
     t.halign = halign
     t.valign = valign
-    t.localposition = { x = x, y = y } -- Raw position
     t.color = { r or 1, g or 1, b or 1, a or 1}
+    t.position = { x = x, y = y }
     
     t.disabled = false
     t.hovered = false
@@ -50,16 +69,6 @@ end
 
 function Button:getImage()
     return self.image
-end
-
-function Button:getLocalPosition()
-    return self.localposition.x, self.localposition.y
-end
-
-function Button:getGlobalPosition()
-    local x, y = self:getLocalPosition()
-
-    return x - self.text:getWidth() * getAlignFactor(self.halign), y - self.text:getHeight() * getAlignFactor(self.valign)
 end
 
 function Button:getColor()
@@ -139,6 +148,14 @@ function Button:draw()
     
     love.graphics.setColor(self:getColor())
     love.graphics.draw(self:getText(), self:getGlobalPosition())
+end
+
+function Button:resize(w, h)
+    if self.string then
+        local font = love.graphics.newFont(self.font.name, w * self.font.sizefactor)
+
+        self:setText(font, self.string)
+    end
 end
 
 return Button

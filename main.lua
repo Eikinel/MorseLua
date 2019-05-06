@@ -17,3 +17,7 @@ function love.draw()
         love.graphics.print("State = " .. frame.state, 20, 20)
     end
 end
+
+function love.resize(w, h)
+    frame:resize(w, h)
+end

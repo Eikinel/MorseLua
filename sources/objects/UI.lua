@@ -47,4 +47,12 @@ function UI:draw()
     end    
 end
 
+function UI:resize(w, h)
+    for _, widgets in pairs(self.widgets) do
+        for _, widget in ipairs(widgets) do
+            widget:resize(w, h)
+        end
+    end 
+end
+
 return UI
