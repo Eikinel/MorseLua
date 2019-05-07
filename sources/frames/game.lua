@@ -9,8 +9,7 @@ function game.new()
     local Button = require(const.folders.objects .. "Button")
 
     local fonts = {}
-    fonts.title = love.graphics.newFont(const.folders.fonts .. "TovariSans.ttf", 168)
-    fonts.default = love.graphics.newFont(const.folders.fonts .. "TovariSans.ttf", 84)
+    fonts.default = { name = const.folders.fonts .. "TovariSans.ttf", sizefactor = 0.05 }
 
     game.UI = UI.new()
 
@@ -18,11 +17,16 @@ function game.new()
 end
 
 function game:update(dt)
-    self.UI:update(dt)
+    local ret = self.UI:update(dt)
+    if ret then return ret end
 end
 
 function game:draw()
     self.UI:draw()  
+end
+
+function game:resize(w, h)
+    self.UI:resize(w, h)
 end
 
 return game

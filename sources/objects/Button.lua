@@ -45,7 +45,7 @@ function Button.new(string, font, image, x, y, halign, valign)
     t.halign = halign
     t.valign = valign
     t.color = { r or 1, g or 1, b or 1, a or 1}
-    t.position = { x = x, y = y }
+    t.position = { x = x, y = y } -- Factor from 0 to 1, 0;0 meaning top left and 1;1 bottom right
     
     t.disabled = false
     t.hovered = false
