@@ -1,7 +1,31 @@
 _G.const = require("const")
-_G.debug = true
-_G.elapsed = 0 -- Global elapsed time
-require(const.folders.tools .. "showtable")
+_G.conf = require(const.folders.tools .. "config").getConfig()
+_G.elapsed = 0 -- Global clock for all frames
+require(const.folders.tools .. "showtable") -- Debug purpose
+
+function love.load()
+    -- Start with splashscreen
+    frame = require(const.folders.frames .. const.frames.splashscreen).new()
+end
+
+function love.update(dt)
+    frame = frame:update(dt) or frame
+end
+
+function love.draw()
+    if conf.debug then
+        love.graphics.print("State = " .. frame.state, 20, 20)
+        love.graphics.print("FPS = " .. tostring(love.timer.getFPS()) .. " / " .. (conf.window.fps or "?"), 20, 40)
+        love.graphics.print("Time elapsed = " .. string.format("%.4f", tostring(_G.elapsed)), 20, 60)
+    end
+
+    frame:draw()
+end
+
+function love.resize(w, h)
+    frame:resize(w, h)
+end
+
 
 -- Default Löve2D run, with FPS handling
 function love.run()
@@ -11,6 +35,7 @@ function love.run()
 	if love.timer then love.timer.step() end
  
     local dt = 0
+    local fps = 1 / (conf.window.fps or 1000)
  
 	-- Main loop time.
 	return function()
@@ -30,7 +55,7 @@ function love.run()
 		-- Update dt, as we'll be passing it to update
         if love.timer then
             dt = love.timer.step()
-            _G.elapsed = _G.elapsed + dt
+            elapsed = elapsed + dt
         end
 
         -- Call update and draw
@@ -46,28 +71,6 @@ function love.run()
         end
 
         -- Cap FPS according to FPS settings, or 1000 by default
-        if love.timer then love.timer.sleep(const.fps and 1 / const.fps or 1 / 1000) end
+        if love.timer then love.timer.sleep(fps) end
 	end
-end
-
-function love.load()
-    frame = require(const.folders.frames .. const.frames.menu).new()
-end
-
-function love.update(dt)
-    frame = frame:update(dt) or frame
-end
-
-function love.draw()
-    frame:draw()
-
-    if debug then
-        love.graphics.print("State = " .. frame.state, 20, 20)
-        love.graphics.print("FPS = " .. tostring(love.timer.getFPS()) .. " / " .. (const.fps or "?"), 20, 40)
-        love.graphics.print("Time elapsed = " .. string.format("%.4f", tostring(_G.elapsed)), 20, 60)
-    end
-end
-
-function love.resize(w, h)
-    frame:resize(w, h)
 end

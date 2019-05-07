@@ -1,0 +1,17 @@
+{
+    "debug": true,
+
+    "window": {
+        "width": 1280,
+        "height": 720,
+        "minwidth": 640,
+        "minheight": 480,
+        "fullscreen": false,
+        "fullscreentype": "exclusive",
+        "borderless": false,
+        "vsync": false,
+        "resizable": true,
+        "display": 1,
+        "fps": 120
+    }
+}

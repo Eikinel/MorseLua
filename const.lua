@@ -3,7 +3,8 @@ local const = {}
 -- Folder management
 const.folders = {
     sources = "sources/",
-    assets = "assets/"
+    assets = "assets/",
+    deps = "deps/"
 }
 
 const.folders.frames = const.folders.sources .. "frames/"
@@ -24,8 +25,7 @@ const.widgets = {
     button = "button"
 }
 
--- TO PUT IN OPTIONS CONFIG FILE AFTER
--- FPS management
-const.fps = 60
+-- Config file
+const.config = "config.json"
 
 return const
