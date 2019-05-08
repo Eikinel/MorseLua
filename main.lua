@@ -21,9 +21,9 @@ end
 
 function love.resize(w, h)
     local oldw = conf.window.width
-    local oldy = conf.window.height
+    local oldh = conf.window.height
 
-    frame:resize(w, h, oldw, oldy)
+    frame:resize(w, h, oldw, oldh)
     conf.window.width = w
     conf.window.height = h
     settings.write(settings.open("w"), conf)

@@ -1,167 +1,124 @@
 local Button = {}
 Button.__index = Button
 
-local function getAlignFactor(type)
-    local align = {
-        up = 0, left = 0,
-        center = 0.5,
-        down = 1, right = 1
-    }
-
-    return align[type]
-end
-
-
 -- Initializer
 function Button.new(string, font, image, x, y, halign, valign)
-    local t = {}
-    local w, h = love.graphics.getDimensions()
+    local t = require(const.folders.objects .. "GameObject").new(x, y, 0, 0, halign, valign) -- Inherit from GameObject
 
-    if not halign then halign = "left" end
-    if not valign then valign = "up" end
-    
-    t.type = const.widgets.button
+    t.type = const.gameobjects.button
     t.string = string or ""
     t.font = font
     t.image = image
-    t.halign = halign
-    t.valign = valign
     t.color = { r or 1, g or 1, b or 1, a or 1}
-    t.lposition = {} -- Local position without transformation computed with pposition and window size
-    t.gposition = {} -- Global position after transformation computed with lposition and button size
 
-    function t:setText(font, string)
-        self.string = string
-        self.text = love.graphics.newText(font, string)
-    end
-
-    function t:setPosition(x, y, w, h)
-        self.lposition.x = w * x
-        self.lposition.y = h * y
-        self.gposition.x = self.lposition.x - self.text:getWidth() * getAlignFactor(self.halign)
-        self.gposition.y = self.lposition.y - self.text:getHeight() * getAlignFactor(self.valign)
-    end
-
-    t:setText(love.graphics.newFont(font.name, (w * font.sizefactor) / (w / h)), string)
-    t:setPosition(x, y, w, h)
-
-    t.disabled = false
     t.hovered = false
     t.clicked = false
     t.onHover = function() end
     t.onUnhover = function() end
     t.onClick = function() end
 
-    return setmetatable(t, Button)
-end
-
-
--- Getters
-function Button:getString()
-    return self.string
-end
-
-function Button:getText()
-    return self.text
-end
-
-function Button:getImage()
-    return self.image
-end
-
-function Button:getColor()
-    return self.color
-end
-
-function Button:getLocalPosition()
-    return self.lposition.x, self.lposition.y
-end
-
-function Button:getGlobalPosition()
-    return self.gposition.x, self.gposition.y
-end
-
-function Button:getWidth()
-    return self.text:getWidth()
-end
-
-function Button:getHeight()
-    return self.text:getHeight()
-end
-
-function Button:isDisabled()
-    return self.disabled
-end
-
-
--- Setters
-function Button:setOnHover(callback)
-    self.onHover = function () self.hovered = true return callback() end
-end
-
-function Button:setOnUnhover(callback)
-    self.onUnhover = function () self.hovered = false return callback() end
-end
-
-function Button:setOnClick(callback)
-    self.onClick = function () self.clicked = true return callback() end
-end
-
-
--- Events
-function Button:isHovered()
-    local x, y = love.mouse.getPosition()
-    local tx, ty = self:getGlobalPosition()
-
-    if x >= tx and x <= tx + self:getWidth()
-    and y >= ty and y <= ty + self:getHeight() then
-        return true
+    function t:setText(font, string)
+        self.string = string
+        self.text = love.graphics.newText(font, string)
+        t:setSize(t.text:getWidth(), t.text:getHeight())
     end
 
-    return false
-end
+    local w, h = love.graphics.getDimensions()
+    w, h = t:getParent() and t:getParent():getSize() or w, h
 
-function Button:isClicked()
-    return love.mouse.isDown(1)
-end
+    t:setText(love.graphics.newFont(font.name, (w * font.sizefactor) / (w / h)), string)
+    t:setPosition(x, y, t:getSize())
 
-function Button:update(dt)
-    -- Call onHover/onUnhover once
-    if self:isHovered() then
-        if not self.hovered then self.onHover() end
+    -- Getters
+    function t:getString()
+        return self.string
+    end
 
-        if self:isClicked() then
-            if not self.clicked then return self.onClick() end
+    function t:getText()
+        return self.text
+    end
+
+    function t:getImage()
+        return self.image
+    end
+
+    function t:getColor()
+        return self.color
+    end
+
+
+    -- Setters
+    function t:setOnHover(callback)
+        self.onHover = function () self.hovered = true return callback() end
+    end
+
+    function t:setOnUnhover(callback)
+        self.onUnhover = function () self.hovered = false return callback() end
+    end
+
+    function t:setOnClick(callback)
+        self.onClick = function () self.clicked = true return callback() end
+    end
+
+
+    -- Events
+    function t:isHovered()
+        local x, y = love.mouse.getPosition()
+        local tx, ty = self:getGlobalPosition()
+        local w, h = self:getSize()
+
+        if x >= tx and x <= tx + w
+        and y >= ty and y <= ty + h then
+            return true
+        end
+
+        return false
+    end
+
+    function t:isClicked()
+        return love.mouse.isDown(1)
+    end
+
+    function t:update(dt)
+        -- Call onHover/onUnhover once
+        if self:isHovered() then
+            if not self.hovered then self.onHover() end
+
+            if self:isClicked() then
+                if not self.clicked then return self.onClick() end
+            else
+                if self.clicked then
+                    self.clicked = false 
+                end
+            end
         else
-            if self.clicked then
-                self.clicked = false 
+            if self.hovered then 
+                self.onUnhover()
             end
         end
-    else
-        if self.hovered then 
-            self.onUnhover()
+    end
+
+    function t:draw()
+        if self:getImage() then love.graphics.draw(self:getImage()) end
+        
+        love.graphics.setColor(self:getColor())
+        love.graphics.draw(self:getText(), self:getGlobalPosition())
+    end
+
+    function t:resize(w, h, oldw, oldh)
+        local x, y = self:getLocalPosition()
+
+        if self.string then
+            local font = love.graphics.newFont(self.font.name, (w * self.font.sizefactor) / (w / h))
+
+            self:setText(font, self.string)
         end
+        
+        -- Set position after text font size changed (it is used to center text according to its size)
+        self:setPosition(x / oldw, y / oldh, w, h) -- Get position in percentage between 0 to 1, then setPosition compute new position with the window's new size
     end
-end
 
-function Button:draw()
-    if self:getImage() then love.graphics.draw(self:getImage()) end
-    
-    love.graphics.setColor(self:getColor())
-    love.graphics.draw(self:getText(), self:getGlobalPosition())
-end
-
-function Button:resize(w, h, oldw, oldy)
-    local x, y = self:getLocalPosition()
-
-    if self.string then
-        local font = love.graphics.newFont(self.font.name, (w * self.font.sizefactor) / (w / h))
-
-        self:setText(font, self.string)
-    end
-    
-    -- Set position after text font size changed (it is used to center text according to its size)
-    self:setPosition(x / oldw, y / oldy, w, h) -- Get position in percentage between 0 to 1, then setPosition compute new position with the window's new size
+    return setmetatable(t, Button)
 end
 
 return Button

@@ -1,5 +1,7 @@
 local const = {}
 
+const.name = "Morse"
+
 -- Folder management
 const.folders = {
     sources = "sources/",
@@ -21,7 +23,8 @@ const.frames = {
 }
 
 -- Widget types
-const.widgets = {
+const.gameobjects = {
+    gameobject = "gameobject",
     button = "button"
 }
 

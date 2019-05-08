@@ -40,6 +40,10 @@ function settings.load()
             fps = 60
         }
 
+        conf.game = {
+            speed = 10
+        }
+
         settings.write(file, conf)
         file:close()
     else

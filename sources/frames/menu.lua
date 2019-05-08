@@ -5,14 +5,16 @@ menu.__index = menu
 function menu.new()
     print("Creating new menu")
 
-    local UI = require(const.folders.objects .. "UI")
+    local GO = require(const.folders.objects .. "GameObject")
     local Button = require(const.folders.objects .. "Button")
 
     local fonts = {}
     fonts.default = { name = const.folders.fonts .. "TovariSans.ttf", sizefactor = 0.1 }
     fonts.title = { name = const.folders.fonts .. "TovariSans.ttf", sizefactor = 0.25 }
 
-    menu.UI = UI.new()
+    local w, h = love.graphics.getDimensions()
+
+    menu.UI = GO.new(0, 0, w, h)
 
     -- Create buttons
     local buttons = {}
@@ -31,10 +33,10 @@ function menu.new()
 
         button:setOnHover(onHover)
         button:setOnUnhover(onUnhover)
-        menu.UI:addWidget(const.widgets.button, button) -- Attach UI elements to actual UI
+        menu.UI:addChild(button) -- Attach UI elements to actual UI
     end
 
-    menu.UI:addWidget(const.widgets.button, Button.new("Morse", fonts.title, nil, 0.5, 0.2, "center", "center"))
+    menu.UI:addChild(Button.new("Morse", fonts.title, nil, 0.5, 0.2, "center", "center"))
 
     return menu
 end
@@ -45,11 +47,11 @@ function menu:update(dt)
 end
 
 function menu:draw()
-    self.UI:draw()  
+    self.UI:draw()
 end
 
-function menu:resize(w, h, oldw, oldy)
-    self.UI:resize(w, h, oldw, oldy)
+function menu:resize(w, h, oldw, oldh)
+    self.UI:resize(w, h, oldw, oldh)
 end
 
 return menu
