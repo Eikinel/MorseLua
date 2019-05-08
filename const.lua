@@ -25,7 +25,11 @@ const.widgets = {
     button = "button"
 }
 
--- Config file
-const.config = "config.json"
+-- Save files
+const.saves = {}
+const.saves.settings = {
+    filename = "settings.lua",
+    path = love.filesystem.getSaveDirectory() .. "/settings.lua"
+}
 
 return const
