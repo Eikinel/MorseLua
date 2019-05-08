@@ -1,18 +1,37 @@
 local config = {}
 config.__index = config
 
-function config.getConfig()
+local function openConfigFile(mode)
     local const = require("const")
-    local file = io.open(const.config, "r")
-    local conf = nil
-    
-    if file then
-        local json = require(const.folders.deps .. "json/json")
-        conf = json.decode(file:read("*a"))
-        file:close()
-    end
+    local file = love.filesystem.newFile(const.config)
+    local ok, err = file:open(mode)
 
-    return conf
+    if not ok then print (err) return end
+
+    return file
+end
+
+function config.init()
+    local file = openConfigFile("r")
+    if not file then return end
+
+    local const = require("const")
+    local json = require(const.folders.deps .. "json/json")
+    config.data = json.decode(file:read())
+    file:close()
+
+    return config
+end
+
+function config:get(key)
+    if not self.data then print("Empty conf data") return end
+    return key and self.data[key] or self.data
+end
+
+function config:update(table)
+    for key, value in pairs(table) do
+
+    end
 end
 
 return config

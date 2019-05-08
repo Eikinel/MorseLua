@@ -7,11 +7,10 @@ function menu.new()
 
     local UI = require(const.folders.objects .. "UI")
     local Button = require(const.folders.objects .. "Button")
-    local w, h = love.graphics.getDimensions()
 
     local fonts = {}
-    fonts.default = { name = const.folders.fonts .. "TovariSans.ttf", sizefactor = 0.06 }
-    fonts.title = { name = const.folders.fonts .. "TovariSans.ttf", sizefactor = 0.13 }
+    fonts.default = { name = const.folders.fonts .. "TovariSans.ttf", sizefactor = 0.1 }
+    fonts.title = { name = const.folders.fonts .. "TovariSans.ttf", sizefactor = 0.25 }
 
     menu.UI = UI.new()
 
@@ -49,8 +48,8 @@ function menu:draw()
     self.UI:draw()  
 end
 
-function menu:resize(w, h)
-    self.UI:resize(w, h)
+function menu:resize(w, h, oldw, oldy)
+    self.UI:resize(w, h, oldw, oldy)
 end
 
 return menu

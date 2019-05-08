@@ -1,12 +1,13 @@
 function love.conf(t)
     -- Use config file to setup window with local settings
     local const = require("const")
-    local conf = require(const.folders.tools .. "config").getConfig()
+    local conf = require(const.folders.tools .. "config").init()
+    local wconf = conf:get("window")
 
     t.identity = nil                        -- The name of the save directory (string)
     t.appendidentity = false                -- Search files in source directory before save directory (boolean)
     t.version = "11.2"                      -- The LÖVE version this game was made for (string)
-    t.console = conf and conf.debug or false    -- Attach a console (boolean, Windows only)
+    t.console = conf and conf:get("debug") or false    -- Attach a console (boolean, Windows only)
     t.accelerometerjoystick = true          -- Enable the accelerometer on iOS and Android by exposing it as a Joystick (boolean)
     t.externalstorage = false               -- True to save files (and read from the save directory) in external storage on Android (boolean) 
     t.gammacorrect = false                  -- Enable gamma-correct rendering, when supported by the system (boolean)
@@ -15,19 +16,19 @@ function love.conf(t)
 
     t.window.title = "Morse"                -- The window title (string)
     t.window.icon = nil                     -- Filepath to an image to use as the window's icon (string)
-    t.window.width = conf and conf.window.width or 0                             -- The window width (number), chosen between user config or maximum
-    t.window.height = conf and conf.window.height or 0                           -- The window height (number), chosen between user config or maximum
-    t.window.borderless = conf and conf.window.borderless or false               -- Remove all border visuals from the window (boolean)
-    t.window.resizable = conf and conf.window.resizable or false                 -- Let the window be user-resizable (boolean)
-    t.window.minwidth = conf and conf.window.minwidth or 640                     -- Minimum window width if the window is resizable (number), chosen between user config or default
-    t.window.minheight = conf and conf.window.minheight or 480                   -- Minimum window height if the window is resizable (number), chosen between user config or default
-    t.window.fullscreen = conf and conf.window.fullscreen or false               -- Enable fullscreen (boolean)
-    t.window.fullscreentype = conf and conf.window.fullscreentype or "exclusive" -- Choose between "desktop" fullscreen or "exclusive" fullscreen mode (string)
-    t.window.vsync = conf and conf.window.vsync or false                         -- Vertical sync mode (boolean)
+    t.window.width = wconf and wconf.width or 0                             -- The window width (number), chosen between user config or maximum
+    t.window.height = wconf and wconf.height or 0                           -- The window height (number), chosen between user config or maximum
+    t.window.borderless = wconf and wconf.borderless or false               -- Remove all border visuals from the window (boolean)
+    t.window.resizable = wconf and wconf.resizable or false                 -- Let the window be user-resizable (boolean)
+    t.window.minwidth = wconf and wconf.minwidth or 640                     -- Minimum window width if the window is resizable (number), chosen between user config or default
+    t.window.minheight = wconf and wconf.minheight or 480                   -- Minimum window height if the window is resizable (number), chosen between user config or default
+    t.window.fullscreen = wconf and wconf.fullscreen or false               -- Enable fullscreen (boolean)
+    t.window.fullscreentype = wconf and wconf.fullscreentype or "exclusive" -- Choose between "desktop" fullscreen or "exclusive" fullscreen mode (string)
+    t.window.vsync = wconf and wconf.vsync or false                         -- Vertical sync mode (boolean)
     t.window.msaa = 0                       -- The number of samples to use with multi-sampled antialiasing (number)
     t.window.depth = nil                    -- The number of bits per sample in the depth buffer
     t.window.stencil = nil                  -- The number of bits per sample in the stencil buffer
-    t.window.display = conf and conf.window.display or 1                         -- Index of the monitor to show the window in (number)
+    t.window.display = wconf and wconf.display or 1                         -- Index of the monitor to show the window in (number)
     t.window.highdpi = false                -- Enable high-dpi mode for the window on a Retina display (boolean)
     t.window.x = nil                        -- The x-coordinate of the window's position in the specified display (number)
     t.window.y = nil                        -- The y-coordinate of the window's position in the specified display (number)

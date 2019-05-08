@@ -20,33 +20,31 @@ function Button.new(string, font, image, x, y, halign, valign)
     if not halign then halign = "left" end
     if not valign then valign = "up" end
     
+    t.type = const.widgets.button
+    t.string = string or ""
+    t.font = font
+    t.image = image
+    t.halign = halign
+    t.valign = valign
+    t.color = { r or 1, g or 1, b or 1, a or 1}
+    t.lposition = {} -- Local position without transformation computed with pposition and window size
+    t.gposition = {} -- Global position after transformation computed with lposition and button size
+
     function t:setText(font, string)
         self.string = string
         self.text = love.graphics.newText(font, string)
     end
 
-    function t:getLocalPosition()
-        local w, h = love.graphics.getDimensions()
-
-        return w * self.position.x, h * self.position.y
-    end
-    
-    function t:getGlobalPosition()
-        local x, y = self:getLocalPosition()
-    
-        return x - self.text:getWidth() * getAlignFactor(self.halign), y - self.text:getHeight() * getAlignFactor(self.valign)
+    function t:setPosition(x, y, w, h)
+        self.lposition.x = w * x
+        self.lposition.y = h * y
+        self.gposition.x = self.lposition.x - self.text:getWidth() * getAlignFactor(self.halign)
+        self.gposition.y = self.lposition.y - self.text:getHeight() * getAlignFactor(self.valign)
     end
 
-    t.type = const.widgets.button
-    t.string = string or ""
-    t.font = font
-    t:setText(love.graphics.newFont(font.name, w * font.sizefactor), string)
-    t.image = image
-    t.halign = halign
-    t.valign = valign
-    t.color = { r or 1, g or 1, b or 1, a or 1}
-    t.position = { x = x, y = y } -- Factor from 0 to 1, 0;0 meaning top left and 1;1 bottom right
-    
+    t:setText(love.graphics.newFont(font.name, (w * font.sizefactor) / (w / h)), string)
+    t:setPosition(x, y, w, h)
+
     t.disabled = false
     t.hovered = false
     t.clicked = false
@@ -75,12 +73,20 @@ function Button:getColor()
     return self.color
 end
 
+function Button:getLocalPosition()
+    return self.lposition.x, self.lposition.y
+end
+
+function Button:getGlobalPosition()
+    return self.gposition.x, self.gposition.y
+end
+
 function Button:getWidth()
-    return self:getText():getWidth()
+    return self.text:getWidth()
 end
 
 function Button:getHeight()
-    return self:getText():getHeight()
+    return self.text:getHeight()
 end
 
 function Button:isDisabled()
@@ -99,11 +105,6 @@ end
 
 function Button:setOnClick(callback)
     self.onClick = function () self.clicked = true return callback() end
-end
-
-function Button:setPosition(x, y)
-    self.localposition.x = x
-    self.localposition.y = y
 end
 
 
@@ -150,12 +151,17 @@ function Button:draw()
     love.graphics.draw(self:getText(), self:getGlobalPosition())
 end
 
-function Button:resize(w, h)
+function Button:resize(w, h, oldw, oldy)
+    local x, y = self:getLocalPosition()
+
     if self.string then
-        local font = love.graphics.newFont(self.font.name, w * self.font.sizefactor)
+        local font = love.graphics.newFont(self.font.name, (w * self.font.sizefactor) / (w / h))
 
         self:setText(font, self.string)
     end
+    
+    -- Set position after text font size changed (it is used to center text according to its size)
+    self:setPosition(x / oldw, y / oldy, w, h) -- Get position in percentage between 0 to 1, then setPosition compute new position with the window's new size
 end
 
 return Button

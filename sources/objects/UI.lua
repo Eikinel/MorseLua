@@ -47,10 +47,10 @@ function UI:draw()
     end    
 end
 
-function UI:resize(w, h)
+function UI:resize(w, h, oldw, oldy)
     for _, widgets in pairs(self.widgets) do
         for _, widget in ipairs(widgets) do
-            widget:resize(w, h)
+            widget:resize(w, h, oldw, oldy)
         end
     end 
 end

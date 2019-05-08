@@ -1,11 +1,11 @@
 _G.const = require("const")
-_G.conf = require(const.folders.tools .. "config").getConfig()
 _G.elapsed = 0 -- Global clock for all frames
 require(const.folders.tools .. "showtable") -- Debug purpose
 
 function love.load()
     -- Start with splashscreen
     frame = require(const.folders.frames .. const.frames.splashscreen).new()
+    conf = config:get()
 end
 
 function love.update(dt)
@@ -23,19 +23,29 @@ function love.draw()
 end
 
 function love.resize(w, h)
-    frame:resize(w, h)
+    local oldw = conf.window.width
+    local oldy = conf.window.height
+
+    frame:resize(w, h, oldw, oldy)
+    conf.window.width = w
+    conf.window.height = h
+    --config:update()
 end
 
 
 -- Default Löve2D run, with FPS handling
 function love.run()
+    config = require(const.folders.tools .. "config").init() -- Global config info
+
 	if love.load then love.load(love.arg.parseGameArguments(arg), arg) end
  
 	-- We don't want the first frame's dt to include time taken by love.load.
 	if love.timer then love.timer.step() end
  
     local dt = 0
-    local fps = 1 / (conf.window.fps or 1000)
+    local wconf = config:get("window")
+    local fps = 1 / (wconf and wconf.fps or 1000)
+    wconf = nil
  
 	-- Main loop time.
 	return function()
