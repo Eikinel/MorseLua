@@ -22,9 +22,11 @@ const.frames = {
     game = "game"
 }
 
--- Widget types
+-- GO types
 const.gameobjects = {
     gameobject = "gameobject",
+    text = "text",
+    image = "image",
     button = "button"
 }
 

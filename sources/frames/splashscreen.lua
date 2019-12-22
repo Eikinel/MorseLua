@@ -22,9 +22,6 @@ function splashscreen:draw()
     
 end
 
-function splashscreen:resize(w, h)
-end
-
 local function fadeIn(dt)
 end
 

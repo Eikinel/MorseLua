@@ -1,7 +1,14 @@
 local script = {}
 
-function script.changeColor(button, color)
-    button.text:set({ color, button.string })
+function script.changeTextColor(button, color)
+    for _, children in pairs(button:getChildren()) do
+        for _, child in pairs(children) do
+            if child:getType() == const.gameobjects.text then
+                child:setColor(color)
+                break
+            end
+        end
+    end
 end
 
 function script.changeText(button, string)

@@ -31,9 +31,4 @@ function game:draw()
     self.pauseUI:draw()
 end
 
-function game:resize(w, h)
-    self.UI:resize(w, h)
-    self.pauseUI:resize(w, h)
-end
-
 return game

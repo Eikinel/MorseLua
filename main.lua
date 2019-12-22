@@ -10,23 +10,20 @@ function love.update(dt)
 end
 
 function love.draw()
+    frame:draw()
+    
     if conf.debug then
         love.graphics.print("State = " .. frame.state, 20, 20)
         love.graphics.print("FPS = " .. tostring(love.timer.getFPS()) .. " / " .. (conf.window.fps or "?"), 20, 40)
         love.graphics.print("Time elapsed = " .. string.format("%.4f", tostring(_G.elapsed)), 20, 60)
     end
-
-    frame:draw()
 end
 
 function love.resize(w, h)
-    local oldw = conf.window.width
-    local oldh = conf.window.height
-
-    frame:resize(w, h, oldw, oldh)
     conf.window.width = w
     conf.window.height = h
     settings.write(settings.open("w"), conf)
+    frame = frame.new()
 end
 
 
@@ -39,14 +36,14 @@ function love.run()
 
 	if love.load then love.load(love.arg.parseGameArguments(arg), arg) end
  
-	-- We don't want the first frame's dt to include time taken by love.load.
-	if love.timer then love.timer.step() end
+    -- We don't want the first frame's dt to include time taken by love.load.
+    if love.timer then love.timer.step() end
  
     local dt = 0
     local fps = 1 / (conf.window.fps or 1000)
  
-	-- Main loop time.
-	return function()
+    -- Main loop time.
+    return function()
 		-- Process events.
 		if love.event then
 			love.event.pump()

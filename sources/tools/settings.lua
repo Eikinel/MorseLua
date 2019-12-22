@@ -31,6 +31,15 @@ function settings.load()
 
         -- Create settings from zero
         conf.debug = false
+        conf.enabletips = false
+        conf.game = {
+            speed = 10
+        }
+
+        conf.keys = {
+            back = "return"
+        }
+        
         conf.window = {
             width = 0, height = 0,
             minwidth = 640, minheight = 480,
@@ -38,10 +47,6 @@ function settings.load()
             borderless = false, resizable = false,
             vsync = false, display = 1,
             fps = 60
-        }
-
-        conf.game = {
-            speed = 10
         }
 
         settings.write(file, conf)
